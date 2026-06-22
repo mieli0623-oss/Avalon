@@ -204,7 +204,7 @@
 <body>
     <button class="back-btn" onclick="window.history.back()">←</button>
 
-    <div class="qr-container">
+   <div class="qr-container" id="accessCard">
         <div class="companies-logo">
             <img src="img/logo-prologis.png" alt="Prologis">
             <img src="img/logo-martel.png" alt="Martel">
@@ -253,7 +253,7 @@
     </div>
 
     <!-- Librería QRCode.js desde CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
     <script>
         // Obtener parámetros de la URL
@@ -329,37 +329,60 @@
             link.click();
         }
 
-        function compartirQR() {
-            const text = `Pase de acceso\nVisitante: ${visitorName}\nEmpresa: ${empresa}\nToken: ${token}\nPlanta: ${planta}`;
-            
-            if (navigator.share) {
-                const qrImg = document.getElementById('qrImage');
-                
-                // Intentar compartir con la imagen del QR
-                fetch(qrImg.src)
-                    .then(res => res.blob())
-                    .then(blob => {
-                        const file = new File([blob], `pase-${token}.png`, { type: 'image/png' });
-                        navigator.share({
-                            title: 'Pase de Acceso',
-                            text: text,
-                            files: [file]
-                        });
-                    })
-                    .catch(() => {
-                        // Fallback: compartir solo texto
-                        navigator.share({
-                            title: 'Pase de Acceso',
-                            text: text
-                        });
-                    });
-            } else if (navigator.clipboard) {
-                navigator.clipboard.writeText(text);
-                alert('✅ Información copiada al portapapeles');
+        async function compartirQR() {
+
+    try {
+
+        const card = document.getElementById('accessCard');
+
+        const canvas = await html2canvas(card, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: '#ffffff'
+        });
+
+        canvas.toBlob(async (blob) => {
+
+            const file = new File(
+                [blob],
+                `PaseAcceso-${token}.png`,
+                {
+                    type: 'image/png'
+                }
+            );
+
+            if (
+                navigator.canShare &&
+                navigator.canShare({ files: [file] })
+            ) {
+
+                await navigator.share({
+                    title: 'Pase de Acceso',
+                    text: `Pase de acceso para ${visitorName}`,
+                    files: [file]
+                });
+
             } else {
-                alert(text);
+
+                const link = document.createElement('a');
+
+                link.href = URL.createObjectURL(blob);
+
+                link.download = `PaseAcceso-${token}.png`;
+
+                link.click();
             }
-        }
+
+        }, 'image/png');
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert('Error al compartir la tarjeta');
+
+    }
+}
     </script>
 </body>
 </html>
