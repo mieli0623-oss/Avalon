@@ -6,87 +6,131 @@
 <title>Activar Cuenta</title>
 
 <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
-    font-family:Arial,sans-serif;
-    background:#f4f4f4;
+    font-family:Segoe UI,sans-serif;
+    background:linear-gradient(135deg,#00594C,#004838);
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    padding:20px;
 }
 
-.card{
+.container{
     background:white;
+    width:100%;
+    max-width:450px;
     padding:30px;
-    border-radius:15px;
-    width:400px;
-    max-width:90%;
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,.25);
 }
 
-h2{
+h1{
     text-align:center;
+    color:#00594C;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:5px;
+    font-weight:bold;
     color:#00594C;
 }
 
 input{
     width:100%;
     padding:12px;
-    margin-top:10px;
-    margin-bottom:15px;
     border:1px solid #ccc;
     border-radius:8px;
-    box-sizing:border-box;
+    font-size:15px;
 }
 
 button{
     width:100%;
-    padding:14px;
-    border:none;
-    border-radius:8px;
     background:#00594C;
     color:white;
-    font-size:16px;
+    border:none;
+    padding:14px;
+    border-radius:8px;
     cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
 }
 
 button:hover{
-    background:#00443a;
+    background:#004838;
 }
 
-#msg{
+.message{
     margin-top:15px;
     text-align:center;
     font-weight:bold;
 }
+
+.success{
+    color:green;
+}
+
+.error{
+    color:red;
+}
+
 </style>
+
+<script src="api-config.js"></script>
 
 </head>
 <body>
 
-<div class="card">
+<div class="container">
 
-    <h2>Activar Cuenta</h2>
+    <h1>Activar Cuenta</h1>
 
-    <input
-        type="text"
-        id="username"
-        placeholder="Usuario">
+    <p class="subtitle">
+        Introduce el código enviado por el administrador
+    </p>
 
-    <input
-        type="text"
-        id="code"
-        placeholder="Código de activación">
+    <div class="input-group">
+        <label>Usuario</label>
+        <input
+            type="text"
+            id="username"
+            placeholder="Tu usuario">
+    </div>
+
+    <div class="input-group">
+        <label>Código de activación</label>
+        <input
+            type="text"
+            id="code"
+            placeholder="Ej: 879064">
+    </div>
 
     <button onclick="activarCuenta()">
-        ACTIVAR CUENTA
+        Activar Cuenta
     </button>
 
-    <div id="msg"></div>
+    <div id="mensaje" class="message"></div>
 
 </div>
-
-<script src="api-config.js"></script>
 
 <script>
 
@@ -98,48 +142,61 @@ async function activarCuenta(){
     const code =
         document.getElementById('code').value.trim();
 
-    const msg =
-        document.getElementById('msg');
+    const mensaje =
+        document.getElementById('mensaje');
 
-    msg.innerHTML = 'Validando...';
+    if(!username || !code){
+
+        mensaje.className = 'message error';
+
+        mensaje.innerHTML =
+            'Complete todos los campos';
+
+        return;
+    }
 
     try{
 
-        const res = await fetch(
-            apiUrl('/api/auth/activate'),
-            {
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify({
-                    username,
-                    code
-                })
-            }
-        );
+        const response =
+            await fetch(
+                apiUrl('/auth/activate'),
+                {
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        username,
+                        code
+                    })
+                }
+            );
 
-        const data = await res.json();
+        const data =
+            await response.json();
 
-        if(res.ok){
+        if(data.success){
 
-            msg.style.color='green';
+            mensaje.className =
+                'message success';
 
-            msg.innerHTML =
+            mensaje.innerHTML =
                 '✅ Cuenta activada correctamente';
 
             setTimeout(()=>{
 
-                window.location.href='index.html';
+                window.location.href =
+                    'login.html';
 
             },2000);
 
         }else{
 
-            msg.style.color='red';
+            mensaje.className =
+                'message error';
 
-            msg.innerHTML =
-                data.error || 'Error activando cuenta';
+            mensaje.innerHTML =
+                data.error || 'Código incorrecto';
 
         }
 
@@ -147,10 +204,11 @@ async function activarCuenta(){
 
         console.error(error);
 
-        msg.style.color='red';
+        mensaje.className =
+            'message error';
 
-        msg.innerHTML =
-            '❌ Error de conexión';
+        mensaje.innerHTML =
+            'Error de conexión';
 
     }
 
