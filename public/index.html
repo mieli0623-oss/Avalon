@@ -371,6 +371,10 @@
             <button class="link-button" onclick="mostrarRegistro()">
                 ¿No tienes cuenta? Regístrate aquí
             </button>
+
+            <button class="link-button" onclick="mostrarActivacion()">
+                ¿Ya tienes un código de activación?
+            </button>
             
             <button class="cancel-btn" onclick="cerrarLogin()">
                 Cancelar
@@ -380,76 +384,118 @@
 
     <!-- MODAL DE REGISTRO -->
     <div id="register-modal" class="modal">
-        <div class="modal-content">
-            <h3>Crear Nueva Cuenta</h3>
-            
-            <div class="form-group">
-                <label>Tipo de Usuario:</label>
-                <select id="regUserType">
-                    <option value="">Selecciona un tipo</option>
-                    <option value="resident">Residente</option>
-                    <option value="admin">Administrador</option>
-                </select>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Nombre:</label>
-                    <input type="text" id="regNombre" placeholder="Tu nombre">
-                </div>
-                <div class="form-group">
-                    <label>Apellido:</label>
-                    <input type="text" id="regApellido" placeholder="Tu apellido">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Nº Bodega:</label>
-                    <input type="text" id="regBodega" placeholder="Ej: B-101">
-                </div>
-                <div class="form-group">
-                    <label>Teléfono:</label>
-                    <input type="tel" id="regTelefono" placeholder="+57 300 123 4567">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Correo Electrónico:</label>
-                <input type="email" id="regEmail" placeholder="ejemplo@correo.com">
-            </div>
-
-            <div class="form-group">
-                <label>Usuario:</label>
-                <input type="text" id="regUsuario" placeholder="Nombre de usuario">
-            </div>
-
-            <div class="form-group">
-                <label>Contraseña:</label>
-                <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres" minlength="8">
-            </div>
-
-            <div class="form-group">
-                <label>Confirmar Contraseña:</label>
-                <input type="password" id="regConfirmPassword" placeholder="Repite tu contraseña">
-            </div>
-
-            <div id="registerStatus" class="status-message"></div>
-
-            <button class="menu-btn btn-resident" onclick="registrarUsuario()" style="margin-bottom:10px;">
-                CREAR CUENTA
-            </button>
-            
-            <button class="link-button" onclick="volverALogin()">
-                ¿Ya tienes cuenta? Inicia sesión
-            </button>
-            
-            <button class="cancel-btn" onclick="cerrarRegistro()">
-                Cancelar
-            </button>
+    <div class="modal-content">
+        <h3>Crear Nueva Cuenta</h3>
+        
+        <div class="form-group">
+            <label>Tipo de Usuario:</label>
+            <select id="regUserType">
+                <option value="">Selecciona un tipo</option>
+                <option value="resident">Residente</option>
+                <option value="admin">Administrador</option>
+            </select>
         </div>
-    </div>
 
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" id="regNombre" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+                <label>Apellido:</label>
+                <input type="text" id="regApellido" placeholder="Tu apellido">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nº Bodega:</label>
+                <input type="text" id="regBodega" placeholder="Ej: B-101">
+            </div>
+            <div class="form-group">
+                <label>Teléfono:</label>
+                <input type="tel" id="regTelefono" placeholder="+57 300 123 4567">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Correo Electrónico:</label>
+            <input type="email" id="regEmail" placeholder="ejemplo@correo.com">
+        </div>
+
+        <div class="form-group">
+            <label>Usuario:</label>
+            <input type="text" id="regUsuario" placeholder="Nombre de usuario">
+        </div>
+
+        <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" id="regPassword" placeholder="Mínimo 8 caracteres" minlength="8">
+        </div>
+
+        <div class="form-group">
+            <label>Confirmar Contraseña:</label>
+            <input type="password" id="regConfirmPassword" placeholder="Repite tu contraseña">
+        </div>
+
+        <div id="registerStatus" class="status-message"></div>
+
+        <button class="menu-btn btn-resident" onclick="registrarUsuario()" style="margin-bottom:10px;">
+            CREAR CUENTA
+        </button>
+        
+        <button class="link-button" onclick="volverALogin()">
+            ¿Ya tienes cuenta? Inicia sesión
+        </button>
+        
+        <button class="cancel-btn" onclick="cerrarRegistro()">
+            Cancelar
+        </button>
+    </div>
+</div>
+
+<!-- MODAL ACTIVAR CUENTA -->
+<div id="activate-modal" class="modal">
+    <div class="modal-content">
+
+        <h3>Activar Cuenta</h3>
+
+        <div class="form-group">
+            <label>Usuario</label>
+            <input
+                type="text"
+                id="activateUsername"
+                placeholder="Ingresa tu usuario">
+        </div>
+
+        <div class="form-group">
+            <label>Código de Activación</label>
+            <input
+                type="text"
+                id="activateCode"
+                placeholder="Código recibido por correo">
+        </div>
+
+        <div id="activateStatus" class="status-message"></div>
+
+        <button
+            class="menu-btn btn-resident"
+            onclick="activarCuenta()">
+
+            ACTIVAR CUENTA
+
+        </button>
+
+        <button
+            class="cancel-btn"
+            onclick="cerrarActivacion()">
+
+            Cancelar
+
+        </button>
+
+    </div>
+</div>
     <script>
         // ========== FUNCIONES DE LOGIN ==========
         function mostrarLogin() { 
@@ -542,6 +588,120 @@
             mostrarLogin();
         }
 
+        // ========== ACTIVACIÓN DE CUENTAS ==========
+function mostrarActivacion() {
+
+    cerrarLogin();
+
+    document.getElementById(
+        'activate-modal'
+    ).style.display = 'flex';
+
+}
+
+function cerrarActivacion() {
+
+    document.getElementById(
+        'activate-modal'
+    ).style.display = 'none';
+
+    mostrarMensaje(
+        'activateStatus',
+        '',
+        'hide'
+    );
+
+}
+
+async function activarCuenta() {
+
+    const username =
+        document.getElementById(
+            'activateUsername'
+        ).value.trim();
+
+    const code =
+        document.getElementById(
+            'activateCode'
+        ).value.trim();
+
+    if (!username || !code) {
+
+        mostrarMensaje(
+            'activateStatus',
+            '⚠️ Ingresa usuario y código',
+            'error'
+        );
+
+        return;
+    }
+
+    try {
+
+        const res = await fetch(
+            apiUrl('/api/auth/activate'),
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type':
+                    'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    code
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+
+            mostrarMensaje(
+                'activateStatus',
+                '✅ Cuenta activada correctamente',
+                'success'
+            );
+
+            setTimeout(() => {
+
+                cerrarActivacion();
+
+                mostrarLogin();
+
+                mostrarMensaje(
+                    'loginStatus',
+                    '✅ Cuenta activada. Ya puedes iniciar sesión',
+                    'success'
+                );
+
+            }, 1500);
+
+        } else {
+
+            mostrarMensaje(
+                'activateStatus',
+                data.error ||
+                '❌ Código inválido',
+                'error'
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        mostrarMensaje(
+            'activateStatus',
+            '❌ Error de conexión',
+            'error'
+        );
+
+    }
+
+}
+
         function limpiarFormularioRegistro() {
             document.getElementById('regUserType').value = '';
             document.getElementById('regNombre').value = '';
@@ -624,13 +784,29 @@
                 const data = await res.json();
 
                 if (res.ok) {
-                    mostrarMensaje('registerStatus', '✅ ¡Cuenta creada exitosamente! Redirigiendo...', 'success');
-                    
-                    setTimeout(() => {
-                        volverALogin();
-                        mostrarMensaje('loginStatus', '✅ Cuenta creada. Ahora puedes iniciar sesión', 'success');
-                    }, 2000);
-                } else {
+
+    mostrarMensaje(
+        'registerStatus',
+        '✅ Solicitud enviada. Espera la aprobación del administrador y el código de activación por correo.',
+        'success'
+    );
+
+    setTimeout(() => {
+
+        cerrarRegistro();
+
+        mostrarLogin();
+
+        mostrarMensaje(
+            'loginStatus',
+            '📧 Cuando recibas tu código usa "¿Ya tienes un código de activación?"',
+            'info'
+        );
+
+    }, 3000);
+
+}
+                else {
                     mostrarMensaje('registerStatus', data.error || '❌ Error al crear la cuenta', 'error');
                 }
             } catch (e) {
