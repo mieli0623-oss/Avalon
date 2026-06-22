@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activar Cuenta</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    width:400px;
+    max-width:90%;
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+h2{
+    text-align:center;
+    color:#00594C;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    margin-bottom:15px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:#00594C;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#00443a;
+}
+
+#msg{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+    <h2>Activar Cuenta</h2>
+
+    <input
+        type="text"
+        id="username"
+        placeholder="Usuario">
+
+    <input
+        type="text"
+        id="code"
+        placeholder="Código de activación">
+
+    <button onclick="activarCuenta()">
+        ACTIVAR CUENTA
+    </button>
+
+    <div id="msg"></div>
+
+</div>
+
+<script src="api-config.js"></script>
+
+<script>
+
+async function activarCuenta(){
+
+    const username =
+        document.getElementById('username').value.trim();
+
+    const code =
+        document.getElementById('code').value.trim();
+
+    const msg =
+        document.getElementById('msg');
+
+    msg.innerHTML = 'Validando...';
+
+    try{
+
+        const res = await fetch(
+            apiUrl('/api/auth/activate'),
+            {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({
+                    username,
+                    code
+                })
+            }
+        );
+
+        const data = await res.json();
+
+        if(res.ok){
+
+            msg.style.color='green';
+
+            msg.innerHTML =
+                '✅ Cuenta activada correctamente';
+
+            setTimeout(()=>{
+
+                window.location.href='index.html';
+
+            },2000);
+
+        }else{
+
+            msg.style.color='red';
+
+            msg.innerHTML =
+                data.error || 'Error activando cuenta';
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        msg.style.color='red';
+
+        msg.innerHTML =
+            '❌ Error de conexión';
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
