@@ -2,135 +2,89 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Activar Cuenta</title>
 
 <style>
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
 body{
-    font-family:Segoe UI,sans-serif;
-    background:linear-gradient(135deg,#00594C,#004838);
-    min-height:100vh;
+    font-family:'Segoe UI',sans-serif;
+    background:#00594C;
     display:flex;
     justify-content:center;
     align-items:center;
-    padding:20px;
+    height:100vh;
+    margin:0;
 }
 
-.container{
+.card{
     background:white;
-    width:100%;
+    width:90%;
     max-width:450px;
     padding:30px;
     border-radius:20px;
-    box-shadow:0 15px 40px rgba(0,0,0,.25);
+    text-align:center;
 }
 
-h1{
-    text-align:center;
+h2{
     color:#00594C;
-    margin-bottom:10px;
-}
-
-.subtitle{
-    text-align:center;
-    color:#666;
     margin-bottom:25px;
-}
-
-.input-group{
-    margin-bottom:15px;
-}
-
-label{
-    display:block;
-    margin-bottom:5px;
-    font-weight:bold;
-    color:#00594C;
 }
 
 input{
     width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:15px;
+    padding:15px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    box-sizing:border-box;
 }
 
 button{
     width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
     background:#00594C;
     color:white;
-    border:none;
-    padding:14px;
-    border-radius:8px;
+    font-weight:bold;
     cursor:pointer;
-    font-size:16px;
-    font-weight:bold;
 }
 
-button:hover{
-    background:#004838;
-}
-
-.message{
+#msg{
     margin-top:15px;
-    text-align:center;
     font-weight:bold;
-}
-
-.success{
-    color:green;
-}
-
-.error{
-    color:red;
 }
 
 </style>
-
-<script src="api-config.js"></script>
-
 </head>
 <body>
 
-<div class="container">
+<div class="card">
 
-    <h1>Activar Cuenta</h1>
+    <h2>Activación de Cuenta</h2>
 
-    <p class="subtitle">
-        Introduce el código enviado por el administrador
-    </p>
+    <input
+        type="text"
+        id="username"
+        placeholder="Usuario"
+    >
 
-    <div class="input-group">
-        <label>Usuario</label>
-        <input
-            type="text"
-            id="username"
-            placeholder="Tu usuario">
-    </div>
-
-    <div class="input-group">
-        <label>Código de activación</label>
-        <input
-            type="text"
-            id="code"
-            placeholder="Ej: 879064">
-    </div>
+    <input
+        type="text"
+        id="code"
+        placeholder="Código de activación"
+    >
 
     <button onclick="activarCuenta()">
-        Activar Cuenta
+        ACTIVAR CUENTA
     </button>
 
-    <div id="mensaje" class="message"></div>
+    <div id="msg"></div>
 
 </div>
+
+<script src="api-config.js"></script>
 
 <script>
 
@@ -142,73 +96,56 @@ async function activarCuenta(){
     const code =
         document.getElementById('code').value.trim();
 
-    const mensaje =
-        document.getElementById('mensaje');
-
     if(!username || !code){
 
-        mensaje.className = 'message error';
-
-        mensaje.innerHTML =
-            'Complete todos los campos';
+        document.getElementById('msg').innerHTML =
+            '⚠️ Completa todos los campos';
 
         return;
     }
 
     try{
 
-        const response =
-            await fetch(
-                apiUrl('/auth/activate'),
-                {
-                    method:'POST',
-                    headers:{
-                        'Content-Type':'application/json'
-                    },
-                    body:JSON.stringify({
-                        username,
-                        code
-                    })
-                }
-            );
+        const res = await fetch(
+            apiUrl('/api/auth/activate'),
+            {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify({
+                    username,
+                    code
+                })
+            }
+        );
 
-        const data =
-            await response.json();
+        const data = await res.json();
 
-        if(data.success){
+        if(res.ok){
 
-            mensaje.className =
-                'message success';
-
-            mensaje.innerHTML =
+            document.getElementById('msg').innerHTML =
                 '✅ Cuenta activada correctamente';
 
-            setTimeout(()=>{
+            setTimeout(() => {
 
-                window.location.href =
-                    'login.html';
+                window.location.href = 'index.html';
 
             },2000);
 
         }else{
 
-            mensaje.className =
-                'message error';
-
-            mensaje.innerHTML =
-                data.error || 'Código incorrecto';
+            document.getElementById('msg').innerHTML =
+                '❌ ' + data.error;
 
         }
 
     }catch(error){
 
+        document.getElementById('msg').innerHTML =
+            '❌ Error de conexión';
+
         console.error(error);
-
-        mensaje.className =
-            'message error';
-
-        mensaje.innerHTML =
-            'Error de conexión';
 
     }
 
