@@ -429,7 +429,10 @@
 
         async function cargarActivaciones() {
 
-    if (userType !== 'admin') return;
+    if (
+        userType !== 'admin' &&
+        userType !== 'ADMIN'
+    ) return;
 
     document.getElementById('admin-panel').style.display = 'block';
 
@@ -520,10 +523,13 @@ if (verificarAutenticacion()) {
     refrescar();
 
     // Si es admin cargar panel de activaciones
-    if (userType === 'admin') {
-        cargarActivaciones();
-        setInterval(cargarActivaciones, 5000);
-    }
+    if (
+    userType === 'admin' ||
+    userType === 'ADMIN'
+) {
+    cargarActivaciones();
+    setInterval(cargarActivaciones, 5000);
+}
 
     // Refrescar cada 5 segundos
     setInterval(refrescar, 5000);
