@@ -550,7 +550,7 @@
 
                 if (res.ok && data.token) {
                     localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('userType', userType);
+                    localStorage.setItem('userType', data.user.role);
                     localStorage.setItem('username', username);
                     
                     mostrarMensaje('loginStatus', '✅ Acceso concedido...', 'success');
