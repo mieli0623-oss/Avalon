@@ -427,6 +427,61 @@
             }
         }
 
+        async function cargarActivaciones() {
+
+    if (userType !== 'admin') return;
+
+    document.getElementById('admin-panel').style.display = 'block';
+
+    try {
+
+        const res = await fetch(
+            apiUrl('/api/auth/pending-users'),
+            {
+                headers: getAuthHeaders()
+            }
+        );
+
+        const usuarios = await res.json();
+
+        document.getElementById('lista-activaciones').innerHTML =
+            usuarios.length
+            ? usuarios.map(u => `
+                <div style="
+                    padding:12px;
+                    margin-bottom:10px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                    background:#fafafa;
+                ">
+                    <b>${u.nombre} ${u.apellido}</b><br>
+                    Usuario: ${u.username}<br>
+                    Bodega: ${u.bodega}<br>
+                    Código: <b style="color:red">${u.activationCode}</b>
+
+                    <br><br>
+
+                    <button
+                        onclick="activarCuenta('${u.username}','${u.activationCode}')"
+                        style="
+                            background:green;
+                            color:white;
+                            border:none;
+                            padding:8px 12px;
+                            border-radius:6px;
+                            cursor:pointer;
+                        ">
+                        ACTIVAR
+                    </button>
+                </div>
+            `).join('')
+            : '<p>No hay usuarios pendientes.</p>';
+
+    } catch(err) {
+        console.error(err);
+    }
+}
+
         // Verificar autenticación al cargar
         if (verificarAutenticacion()) {
             refrescar();
